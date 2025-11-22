@@ -1,0 +1,139 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-gray-800 rounded-lg p-8 max-w-md w-full mx-4 border border-gray-700">
+    <h2 class="text-2xl font-bold mb-6">Create New Account</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="space-y-4">
+        <div>
+          <label for="name" class="block text-sm font-medium mb-1">Account Name</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="My Savings Account"
+          />
+          @if (form.controls.name.invalid && form.controls.name.touched) {
+            <p class="text-red-500 text-sm mt-1">Account name is required</p>
+          }
+        </div>
+
+        <div>
+          <label for="currency" class="block text-sm font-medium mb-1">Currency</label>
+          <select
+            id="currency"
+            formControlName="currency"
+            class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            @for (currency of currencyService.availableCurrencies; track currency.code) {
+              <option [value]="currency.code">
+                {{ currency.symbol }} {{ currency.code }} - {{ currency.name }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label for="startingAmount" class="block text-sm font-medium mb-1"
+            >Starting Amount ({{ form.controls.currency.value }})</label
+          >
+          <input
+            id="startingAmount"
+            type="number"
+            formControlName="startingAmount"
+            class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            min="0"
+            step="100"
+          />
+          @if (
+            form.controls.startingAmount.invalid && form.controls.startingAmount.touched
+          ) {
+            <p class="text-red-500 text-sm mt-1">Starting amount must be 0 or greater</p>
+          }
+        </div>
+
+        <div>
+          <label for="monthlyContribution" class="block text-sm font-medium mb-1"
+            >Monthly Contribution ({{ form.controls.currency.value }})</label
+          >
+          <input
+            id="monthlyContribution"
+            type="number"
+            formControlName="monthlyContribution"
+            class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            min="0"
+            step="10"
+          />
+          @if (
+            form.controls.monthlyContribution.invalid &&
+            form.controls.monthlyContribution.touched
+          ) {
+            <p class="text-red-500 text-sm mt-1">
+              Monthly contribution must be 0 or greater
+            </p>
+          }
+        </div>
+
+        <div>
+          <label for="yearlyGrowthRate" class="block text-sm font-medium mb-1"
+            >Expected Yearly Growth Rate (%)</label
+          >
+          <input
+            id="yearlyGrowthRate"
+            type="number"
+            formControlName="yearlyGrowthRate"
+            class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            min="0"
+            max="100"
+            step="0.1"
+          />
+          @if (
+            form.controls.yearlyGrowthRate.invalid &&
+            form.controls.yearlyGrowthRate.touched
+          ) {
+            <p class="text-red-500 text-sm mt-1">Growth rate must be between 0 and 100</p>
+          }
+        </div>
+
+        <div>
+          <label for="cashoutYears" class="block text-sm font-medium mb-1"
+            >Target Date (Years)</label
+          >
+          <input
+            id="cashoutYears"
+            type="number"
+            formControlName="cashoutYears"
+            class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            min="1"
+            max="100"
+            step="1"
+          />
+          @if (
+            form.controls.cashoutYears.invalid && form.controls.cashoutYears.touched
+          ) {
+            <p class="text-red-500 text-sm mt-1">
+              Target date must be between 1 and 100 years
+            </p>
+          }
+        </div>
+      </div>
+
+      <div class="mt-6 flex gap-3 justify-end">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="form.invalid"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Create Account
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

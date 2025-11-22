@@ -1,16 +1,36 @@
-import { Component, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { NavbarComponent } from './features/layout/navbar.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, NavbarComponent],
   template: `
-    <h1>Welcome to {{ title() }}!</h1>
-
-    <router-outlet />
+    <div class="app-container">
+      <app-navbar />
+      <main class="main-content">
+        <router-outlet />
+      </main>
+    </div>
   `,
-  styles: [],
+  styles: `
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 1rem;
+      }
+    }
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-  protected readonly title = signal('MoneyBloom');
-}
+export class App {}

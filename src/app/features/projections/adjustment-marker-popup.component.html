@@ -1,0 +1,71 @@
+<div
+  class="fixed z-50 bg-gray-800 rounded-lg p-6 shadow-2xl border border-gray-700 w-96 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+>
+  <h3 class="text-lg font-bold mb-4">
+    {{ isEditMode() ? 'Edit Timeline Adjustment' : 'Add Timeline Adjustment' }}
+  </h3>
+
+  <div class="mb-4 text-sm text-gray-400">
+    Date: {{ date().toLocaleDateString() }}
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="space-y-4">
+      <div>
+        <label for="type" class="block text-sm font-medium mb-1">Adjustment Type</label>
+        <select
+          id="type"
+          formControlName="type"
+          class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          @for (type of adjustmentTypes; track type.value) {
+            <option [value]="type.value">{{ type.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label for="value" class="block text-sm font-medium mb-1">{{ getValueLabel() }}</label>
+        <input
+          id="value"
+          type="number"
+          formControlName="value"
+          [placeholder]="getValuePlaceholder()"
+          class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          step="0.01"
+        />
+        @if (form.controls.value.invalid && form.controls.value.touched) {
+          <p class="text-red-500 text-sm mt-1">Value is required</p>
+        }
+      </div>
+    </div>
+
+    <div class="mt-6 flex gap-3 justify-between">
+      @if (isEditMode()) {
+        <button
+          type="button"
+          (click)="onDelete()"
+          class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
+        >
+          Delete
+        </button>
+      }
+      <div class="flex gap-3" [class.ml-auto]="!isEditMode()">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="form.invalid"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {{ isEditMode() ? 'Save Changes' : 'Add Adjustment' }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

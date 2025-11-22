@@ -1,109 +1,171 @@
-# 🎯 Core Goals
+# Core Goals
 
 1. Motivate users to save regularly by visualizing long-term growth.
-2. Make investing feel rewarding through gamification and smooth interactive visuals.
-3. Provide clear insight into how small changes affect long-term outcomes—both in experimentation mode and in locked savings accounts.
+2. Make investing feel approachable through clear, intuitive interactions.
+3. Provide insight into how changes over time affect savings outcomes.
 
-# What it is NOT
-- An income and expense tracker
-- A spendings management system
-- A budgeting or financial-planning advisor
+# What It Is Not
+- Not an income or expense tracker  
+- Not a budgeting tool  
+- Not a financial-planning advisor  
 
-# 🧩 Core Features
+# Core Features
 
-## 1. Main Experimentation Graph (Playground Mode)
+## 1. Savings Accounts
 
-When users open the app, they are greeted with a **single large interactive graph** designed purely for experimentation.  
-This “playground” allows users to understand long-term savings growth without creating an account.
+The application revolves entirely around **Savings Accounts**.  
+Users create accounts to simulate long-term savings with fixed base parameters and optional timeline adjustments.
 
-### Controls included:
-- Starting amount (input field)
-- Monthly contribution (slider from 0-5000)
-- Expected yearly growth rate (slider from 0%-15%)
-- Cashout date in years (slider from 1-50)
-
-### Behavior:
-- The graph updates **in real time with smooth animations** as sliders change.
-- Users can tweak values freely.
-- These values do **not** persist—they are only for exploration.
-
-A **top bar** includes:
-- A button **“Add Savings Account”**
-- A currency selector
-
-When the user clicks “Add Savings Account,” a modal or form appears where they can **manually enter static values** for:
+### Creating an Account
+Users add a new account through a simple form containing:
 - Name  
 - Starting amount  
 - Monthly contribution  
 - Expected yearly growth rate  
 - Cashout date in years  
 
-Once created, the account behaves differently from the playground graph.
+These parameters are **permanently locked** after creation.  
+They serve as the immutable base model for the account.
+
+Each account has its own page at the route:  
+`/accounts/:id`
+
+A list of all accounts is available at:  
+`/accounts`
 
 ---
 
-## 2. Savings Accounts (Locked Parameters + Timeline Editing)
+## 2. Timeline Adjustments (Dynamic Changes Over Time)
 
-Users can create multiple savings accounts.  
-Each account receives its own page at the route:  
-`/accounts/:id`
+Although the base parameters cannot be changed after creation, users can modify the projected savings path through **timeline adjustments**.
 
-### Important Change:
-The four base parameters (starting amount, monthly contribution, growth rate, cashout range) are **locked forever** after creation.  
-They **cannot** be changed—only augmented via timeline adjustments.
+Users can interact directly with the graph to add adjustment points.  
+Each adjustment becomes part of a chronological sequence affecting the calculation going forward.
 
-### Allowed timeline adjustments:
-Users can add points on the timeline by clicking on the graph where:
-- Monthly contribution changes starting at a specific date
-- Expected growth percentage changes starting at a specific date  
-- One-time deposits or withdrawals are added  
+### Types of timeline adjustments:
+- Change in monthly contribution (starting at a specific date)
+- Change in expected growth rate (starting at a specific date)
+- One-time deposits
+- One-time withdrawals
 
-These adjustments simulate real-life events like:
-- A raise  
-- A bonus  
-- Pausing savings  
-- A major purchase  
-- Market growth/decline periods  
-
-When clicking on the graph, a small popup appears allowing users to select the type of adjustment and enter the new value.
-Each adjustment is shown as a marker on the graph with a specified label, and users can drag these markers vertically to change the value or horizontally to change the date.
-When clicked, a small popup allows users to delete the adjustment.
+### Interaction Model:
+- Clicking on a point in the graph opens a small input popup for selecting adjustment type and value.
+- Adjustment markers appear on the timeline.
+- Users can drag markers horizontally to change the date or vertically to adjust the value.
+- Clicking a marker opens a small popup allowing users to delete it.
 
 ---
 
 ## 3. Graph Visualization
 
-Every graph—both in playground mode and account mode—uses a consistent visual style:
+Every account page features a single, clear, data-driven graph.
 
 ### Visual Requirements:
-- Dark, vibrant, futuristic color palette
-- Smooth transitions when values change or when new timeline points are added
-- Vertical stacking for multiple account graphs in overview mode
-- Crisp, intuitive animations to reinforce the “growth over time” concept
+- Professional, modern, flat UI
+- Dark mode only
+- Minimal, purposeful transitions
+- No excessive styling or decorative animations
+- Clean typography and balanced spacing
 
 ### Information shown:
 - Current projected value  
 - Future projected value  
-- Growth trend line  
+- Growth trajectory  
 - Timeline adjustment markers  
-- Tooltip on hover for precise values  
+- Tooltips for precise values on hover  
 
-Account graphs are **only influenced by timeline adjustments**, not by sliders (since base values are locked).
+All projections are recalculated based on:
+- Locked base parameters  
+- Timeline adjustments  
 
 ---
 
-# 🏗 Technical Architecture
+# Technical Architecture
 
 ## Frontend: Angular 21
-- **Standalone components**
-- **Signals** for reactive state management
-- **Route structure**  
-  - `/` → playground graph  
+- Standalone components  
+- Signals for state management  
+- Strict separation of `.ts`, `.html`, `.scss`  
+- Smart components for logic and state  
+- Dumb components for rendering and user interaction  
+- Route structure:
+  - `/accounts` → account overview  
   - `/accounts/:id` → individual account  
-  - `/accounts` → list/overview
-- **Smart vs. dumb components**  
-  - Smart components handle data loading, signals, and business logic  
-  - Dumb components handle rendering, animation, and user interactions
-- **Structure**  
-  - `.ts`, `.html`, `.scss` files clearly separated  
-  - Charts implemented using a performant Angular-compatible library (e.g., ngx-echarts, D3-based solution, or chart.js with custom rendering)
+
+## Charting
+- Implemented using a performant Angular-compatible library (e.g., ngx-echarts, a D3-based solution, or Chart.js with custom rendering)
+- Designed for clarity, performance, and readability in a flat dark-mode environment
+
+
+
+# What Is Present (Fully Implemented)
+1. Savings Accounts ✅
+Account Creation Form ✅
+All fields implemented: Name, Starting amount, Monthly contribution, Growth rate, Cashout years
+Parameters are permanently locked after creation ✅
+Form validation with error messages ✅
+Account Routes ✅
+/accounts - List view of all accounts ✅
+/accounts/:id - Individual account detail page ✅
+Default redirect from / to /accounts ✅
+Account Management ✅
+Create accounts ✅
+Delete accounts (with confirmation) ✅
+LocalStorage persistence ✅
+
+2. Timeline Adjustments ✅
+All Four Adjustment Types Implemented ✅
+Change in monthly contribution ✅
+Change in expected growth rate ✅
+One-time deposits ✅
+One-time withdrawals ✅
+Core Interaction ✅
+Click on graph to add adjustment ✅
+Popup form for selecting type and value ✅
+Adjustments sorted chronologically ✅
+Markers appear on graph ✅
+Color-coded by type (amber, purple, green, red) ✅
+
+3. Graph Visualization ✅
+Visual Requirements Met ✅
+Professional, modern, flat UI ✅
+Dark mode only ✅
+Clean typography and balanced spacing ✅
+No excessive animations ✅
+Information Displayed ✅
+Current projected value ✅
+Future projected value ✅
+Growth trajectory (smooth line chart) ✅
+Timeline adjustment markers (pins) ✅
+Tooltips for precise values on hover ✅
+Calculation Engine ✅
+Compound interest calculations ✅
+Applies locked base parameters ✅
+Applies timeline adjustments chronologically ✅
+Real-time recalculation ✅
+
+❌ What Is Missing (Not Yet Implemented)
+
+1. Draggable Markers ❌
+Concept Requirement:
+"Users can drag markers horizontally to change the date or vertically to adjust the value."
+Status: Not implemented
+Markers are visible but not draggable
+Would require ECharts graphic component with drag handlers
+Click-to-add works, but drag-to-modify does not
+
+2. Click Marker to Delete ❌
+Concept Requirement:
+"Clicking a marker opens a small popup allowing users to delete it."
+Status: Not implemented
+Can only add new adjustments, not edit/delete existing ones
+Clicking markers doesn't trigger any action
+No UI for managing existing adjustments
+
+3. Edit Existing Adjustments ❌
+Concept Requirement (implied):
+Users should be able to modify or remove timeline adjustments
+Status: Partially implemented
+Service methods exist (updateAdjustment, deleteAdjustment)
+No UI to access these operations
+Cannot edit adjustment values after creation

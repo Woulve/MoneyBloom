@@ -6,16 +6,38 @@
         <span class="title-m">M</span><span class="title-o">o</span><span class="title-n">n</span><span class="title-e">e</span><span class="title-y">y</span><span class="title-b">B</span><span class="title-l">l</span><span class="title-oo">o</span><span class="title-om">o</span><span class="title-m2">m</span>
       </h1>
     </div>
-    <button type="button" (click)="reset()" class="btn-reset">Reset to Defaults</button>
+    <div class="header-right">
+      <div class="language-switcher">
+        <button
+          type="button"
+          (click)="switchLanguage('en-US')"
+          class="lang-btn"
+          [class.active]="locale === 'en-US'"
+          aria-label="Switch to English"
+        >
+          EN
+        </button>
+        <button
+          type="button"
+          (click)="switchLanguage('de')"
+          class="lang-btn"
+          [class.active]="locale === 'de'"
+          aria-label="Switch to German"
+        >
+          DE
+        </button>
+      </div>
+      <button type="button" (click)="reset()" class="btn-reset" i18n>Reset to Defaults</button>
+    </div>
   </header>
 
   <div class="content-grid">
     <section class="controls card">
-      <h2 class="section-title">Investment Parameters</h2>
+      <h2 class="section-title" i18n>Investment Parameters</h2>
 
       <div class="control-group">
         <label for="currency" class="label">
-          <span class="label-text">Currency</span>
+          <span class="label-text" i18n>Currency</span>
           <span class="label-value">{{ currSymbol() }}</span>
         </label>
         <select
@@ -32,7 +54,7 @@
 
       <div class="control-group">
         <label for="starting-amount" class="label">
-          <span class="label-text">Starting Amount</span>
+          <span class="label-text" i18n>Starting Amount</span>
         </label>
         <div class="input-slider-group">
           <div class="input-with-unit">
@@ -61,7 +83,7 @@
 
       <div class="control-group">
         <label for="monthly-contribution" class="label">
-          <span class="label-text">Monthly Contribution</span>
+          <span class="label-text" i18n>Monthly Contribution</span>
         </label>
         <div class="input-slider-group">
           <div class="input-with-unit">
@@ -90,7 +112,7 @@
 
       <div class="control-group">
         <label for="growth-rate" class="label">
-          <span class="label-text">Annual Growth Rate</span>
+          <span class="label-text" i18n>Annual Growth Rate</span>
         </label>
         <div class="input-slider-group">
           <div class="input-with-unit">
@@ -119,7 +141,7 @@
 
       <div class="control-group">
         <label for="cashout-years" class="label">
-          <span class="label-text">Investment Period</span>
+          <span class="label-text" i18n>Investment Period</span>
         </label>
         <div class="input-slider-group">
           <div class="input-with-unit">
@@ -131,7 +153,7 @@
               (input)="update('cashoutYears', $event)"
               class="number-input with-suffix"
             />
-            <span class="input-suffix">years</span>
+            <span class="input-suffix" i18n>years</span>
           </div>
           <input
             id="cashout-years"
@@ -148,7 +170,7 @@
 
       <div class="control-group">
         <label for="inflation-rate" class="label">
-          <span class="label-text">Inflation Rate</span>
+          <span class="label-text" i18n>Inflation Rate</span>
         </label>
         <div class="input-slider-group">
           <div class="input-with-unit">
@@ -177,7 +199,7 @@
 
       <div class="control-group">
         <label for="tax-rate" class="label">
-          <span class="label-text">Tax Rate on Gains</span>
+          <span class="label-text" i18n>Tax Rate on Gains</span>
         </label>
         <div class="input-slider-group">
           <div class="input-with-unit">
@@ -207,62 +229,62 @@
 
     <section class="results">
       <div class="card graph-card">
-        <h2 class="section-title">Growth Projection</h2>
+        <h2 class="section-title" i18n>Growth Projection</h2>
         <app-projection-graph [projection]="proj()" [currencySymbol]="currSymbol()" />
       </div>
 
       <div class="stats-grid">
         <div class="stat-section">
-          <h3 class="stat-section-title">Your Investment</h3>
+          <h3 class="stat-section-title" i18n>Investment</h3>
           <div class="stat-card card">
-            <div class="stat-label">Total Contributions</div>
-            <div class="stat-description">All money you put in</div>
+            <div class="stat-label" i18n>Total Contributions</div>
+            <div class="stat-description" i18n>Total amount invested</div>
             <div class="stat-value">
-              {{ currSymbol() }}{{ proj().totalContributions.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+              {{ currSymbol() }}{{ proj().totalContributions | number:'1.0-0' }}
             </div>
           </div>
         </div>
 
         <div class="stat-section">
-          <h3 class="stat-section-title">Your Returns</h3>
+          <h3 class="stat-section-title" i18n>Returns</h3>
           <div class="stat-card card">
-            <div class="stat-label">Total Growth</div>
-            <div class="stat-description">Investment gains earned</div>
+            <div class="stat-label" i18n>Total Growth</div>
+            <div class="stat-description" i18n>Investment gains earned</div>
             <div class="stat-value stat-value-growth">
-              {{ currSymbol() }}{{ proj().totalGrowth.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+              {{ currSymbol() }}{{ proj().totalGrowth | number:'1.0-0' }}
             </div>
           </div>
         </div>
 
         <div class="stat-section">
-          <h3 class="stat-section-title">Final Values</h3>
+          <h3 class="stat-section-title" i18n>Final Values</h3>
           <div class="stat-cards-row">
             <div class="stat-card card">
-              <div class="stat-label">Nominal Value</div>
-              <div class="stat-description">Before taxes & inflation</div>
+              <div class="stat-label" i18n>Nominal Value</div>
+              <div class="stat-description" i18n>Before taxes & inflation</div>
               <div class="stat-value">
-                {{ currSymbol() }}{{ proj().finalValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+                {{ currSymbol() }}{{ proj().finalValue | number:'1.0-0' }}
               </div>
             </div>
             <div class="stat-card card">
-              <div class="stat-label">After-Tax Value</div>
-              <div class="stat-description">After paying {{ settings().taxRate }}% tax on gains</div>
+              <div class="stat-label" i18n>After-Tax Value</div>
+              <div class="stat-description" i18n>After paying {{ settings().taxRate }}% tax on gains</div>
               <div class="stat-value">
-                {{ currSymbol() }}{{ proj().afterTaxValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+                {{ currSymbol() }}{{ proj().afterTaxValue | number:'1.0-0' }}
               </div>
             </div>
             <div class="stat-card card">
-              <div class="stat-label">Inflation-Adjusted</div>
-              <div class="stat-description">Real purchasing power ({{ settings().inflationRate }}% inflation)</div>
+              <div class="stat-label" i18n>Inflation-Adjusted</div>
+              <div class="stat-description" i18n>Real purchasing power ({{ settings().inflationRate }}% inflation)</div>
               <div class="stat-value">
-                {{ currSymbol() }}{{ proj().finalRealValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+                {{ currSymbol() }}{{ proj().finalRealValue | number:'1.0-0' }}
               </div>
             </div>
             <div class="stat-card card stat-card-primary">
-              <div class="stat-label">Final Take-Home</div>
-              <div class="stat-description">After taxes & inflation - what you really get</div>
+              <div class="stat-label" i18n>Final Take-Home</div>
+              <div class="stat-description" i18n>After taxes & inflation - real net value</div>
               <div class="stat-value stat-value-primary">
-                {{ currSymbol() }}{{ proj().afterTaxRealValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+                {{ currSymbol() }}{{ proj().afterTaxRealValue | number:'1.0-0' }}
               </div>
             </div>
           </div>
@@ -272,44 +294,44 @@
   </div>
 
   <section class="incentives-section">
-    <h2 class="incentives-title">Savings Incentives</h2>
-    <p class="incentives-subtitle">See how small changes today can make a big difference tomorrow</p>
+    <h2 class="incentives-title" i18n>Savings Incentives</h2>
+    <p class="incentives-subtitle" i18n>See how small changes today can make a big difference tomorrow</p>
 
     <div class="incentives-grid">
       <div class="incentive-card card">
         <div class="incentive-icon">💰</div>
-        <div class="incentive-text">
+        <div class="incentive-text" i18n>
           Saving just <span class="incentive-highlight">{{ currSymbol() }}10 more per month</span>
-          would give you an additional
-          <span class="incentive-highlight-value">{{ currSymbol() }}{{ extraMonthlyImpact().toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}</span>
-          when you cash out
+          results in an additional
+          <span class="incentive-highlight-value">{{ currSymbol() }}{{ extraMonthlyImpact() | number:'1.0-0' }}</span>
+          at withdrawal
         </div>
       </div>
 
       <div class="incentive-card card">
         <div class="incentive-icon">🚀</div>
-        <div class="incentive-text">
-          Doubling your monthly contribution would result in
-          <span class="incentive-highlight-value">{{ currSymbol() }}{{ doubleContributionImpact().toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}</span>
-          more at retirement
+        <div class="incentive-text" i18n>
+          Doubling the monthly contribution results in
+          <span class="incentive-highlight-value">{{ currSymbol() }}{{ doubleContributionImpact() | number:'1.0-0' }}</span>
+          more at end of period
         </div>
       </div>
 
       <div class="incentive-card card">
         <div class="incentive-icon">⏰</div>
-        <div class="incentive-text">
+        <div class="incentive-text" i18n>
           Investing for just <span class="incentive-highlight">1 more year</span>
-          would add
-          <span class="incentive-highlight-value">{{ currSymbol() }}{{ extraYearImpact().toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}</span>
-          to your final value
+          adds
+          <span class="incentive-highlight-value">{{ currSymbol() }}{{ extraYearImpact() | number:'1.0-0' }}</span>
+          to the final value
         </div>
       </div>
 
       <div class="incentive-card card">
         <div class="incentive-icon">🏖️</div>
-        <div class="incentive-text">
-          Your investment could generate
-          <span class="incentive-highlight-value">{{ currSymbol() }}{{ monthlyPassiveIncome().toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}</span>
+        <div class="incentive-text" i18n>
+          This investment could generate
+          <span class="incentive-highlight-value">{{ currSymbol() }}{{ monthlyPassiveIncome() | number:'1.0-0' }}</span>
           in monthly passive income (4% withdrawal rate)
         </div>
       </div>

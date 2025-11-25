@@ -40,12 +40,25 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "de": {
+            "translation": "src/locale/messages.de.xlf",
+            "baseHref": "/de/"
+          }
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
+            "polyfills": [
+              "@angular/localize/init"
+            ],
             "tsConfig": "tsconfig.app.json",
+            "localize": true,
             "assets": [
               {
                 "glob": "**/*",
@@ -75,7 +88,14 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "localize": false
+            },
+            "de": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": ["de"]
             }
           },
           "defaultConfiguration": "production"
@@ -88,6 +108,9 @@
             },
             "development": {
               "buildTarget": "MoneyBloom:build:development"
+            },
+            "de": {
+              "buildTarget": "MoneyBloom:build:de"
             }
           },
           "defaultConfiguration": "development"

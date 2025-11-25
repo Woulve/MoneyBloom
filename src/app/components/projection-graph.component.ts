@@ -9,6 +9,8 @@ import { ProjectionResult } from '../services/projection-calculator.service';
 
 echarts.use([LineChart, BarChart, GridComponent, TooltipComponent, LegendComponent, CanvasRenderer]);
 
+declare const $localize: (messageParts: TemplateStringsArray, ...expressions: readonly any[]) => string;
+
 interface TooltipParam {
   axisValue: string;
   color: string;
@@ -33,10 +35,15 @@ export class ProjectionGraphComponent {
     const sym = this.currencySymbol();
     const pts = proj.dataPoints;
 
+    const projectedValueLabel = $localize`:@@projectedValue:Projected Value`;
+    const realValueLabel = $localize`:@@realValue:Real Value (Inflation-Adjusted)`;
+    const investedAmountLabel = $localize`:@@investedAmount:Invested Amount`;
+    const growthLabel = $localize`:@@growth:Growth`;
+
     return {
       backgroundColor: 'transparent',
       legend: {
-        data: ['Projected Value', 'Real Value (Inflation-Adjusted)', 'Invested Amount'],
+        data: [projectedValueLabel, realValueLabel, investedAmountLabel],
         textStyle: { color: '#64748b' },
         top: '0%',
       },
@@ -72,7 +79,7 @@ export class ProjectionGraphComponent {
                 : '0.0';
             html += `
               <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;">
-                <div>Growth: ${sym}${fmt(growth)} (${growthPct}%)</div>
+                <div>${growthLabel}: ${sym}${fmt(growth)} (${growthPct}%)</div>
               </div>
             `;
           }
@@ -104,19 +111,19 @@ export class ProjectionGraphComponent {
       },
       series: [
         {
-          name: 'Projected Value',
+          name: projectedValueLabel,
           type: 'bar',
           data: pts.map((p) => p.value),
           itemStyle: { color: '#3b82f6' },
         },
         {
-          name: 'Real Value (Inflation-Adjusted)',
+          name: realValueLabel,
           type: 'bar',
           data: pts.map((p) => p.realValue),
           itemStyle: { color: '#f59e0b' },
         },
         {
-          name: 'Invested Amount',
+          name: investedAmountLabel,
           type: 'bar',
           data: pts.map((p) => p.investedAmount),
           itemStyle: { color: '#10b981' },

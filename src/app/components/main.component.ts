@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, computed, LOCALE_ID } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { SettingsService } from '../services/settings.service';
 import { ProjectionCalculatorService } from '../services/projection-calculator.service';
 import { ProjectionGraphComponent } from './projection-graph.component';
@@ -6,7 +7,7 @@ import { ProjectionSettings, CURRENCIES } from '../models/projection-settings.mo
 
 @Component({
   selector: 'app-main',
-  imports: [ProjectionGraphComponent],
+  imports: [ProjectionGraphComponent, DecimalPipe],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,6 +15,7 @@ import { ProjectionSettings, CURRENCIES } from '../models/projection-settings.mo
 export class MainComponent {
   private readonly settingsSvc = inject(SettingsService);
   private readonly calcSvc = inject(ProjectionCalculatorService);
+  readonly locale = inject(LOCALE_ID);
 
   readonly settings = this.settingsSvc.settings;
   readonly currencies = CURRENCIES;
@@ -70,5 +72,43 @@ export class MainComponent {
 
   reset(): void {
     this.settingsSvc.resetToDefaults();
+  }
+
+  switchLanguage(newLocale: string): void {
+    // In development, you need to restart the server with the desired locale
+    // npm start (English) or npm run start:de (German)
+    if (!this.isProduction()) {
+      console.warn(
+        'Language switching in development requires restarting the dev server.\n' +
+        'Run "npm start" for English or "npm run start:de" for German.'
+      );
+      return;
+    }
+
+    const currentPath = window.location.pathname;
+    const currentLocale = this.locale;
+
+    // Remove current locale from path if present
+    let newPath = currentPath;
+    if (currentPath.startsWith(`/${currentLocale}/`)) {
+      newPath = currentPath.substring(`/${currentLocale}`.length);
+    } else if (currentPath === `/${currentLocale}`) {
+      newPath = '/';
+    }
+
+    // Add new locale to path
+    if (newLocale !== 'en-US') {
+      newPath = `/${newLocale}${newPath}`;
+    }
+
+    // Navigate to new locale
+    window.location.href = newPath;
+  }
+
+  private isProduction(): boolean {
+    // Check if running in production build (localized bundles exist)
+    return window.location.pathname.includes('/en-US/') ||
+           window.location.pathname.includes('/de/') ||
+           document.querySelector('meta[name="build-mode"]')?.getAttribute('content') === 'production';
   }
 }

@@ -1,32 +1,32 @@
 // Design Tokens
 :root {
-  // Colors - Base
-  --bg-1: #f8fafc;
-  --bg-2: #fff;
-  --bg-3: #f1f5f9;
-  --bg-hover: #f1f5f9;
+  // Colors - Base (Dark Mode)
+  --bg-1: #0a0e1a;
+  --bg-2: #0f1623;
+  --bg-3: #1a2332;
+  --bg-hover: #1f2937;
 
-  --txt-1: #0f172a;
-  --txt-2: #334155;
-  --txt-3: #64748b;
+  --txt-1: #f8fafc;
+  --txt-2: #cbd5e1;
+  --txt-3: #94a3b8;
 
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --primary-light: #dbeafe;
+  --primary: #60a5fa;
+  --primary-hover: #3b82f6;
+  --primary-light: #1e3a5f;
 
-  --secondary: #0ea5e9;
-  --secondary-hover: #0284c7;
+  --secondary: #38bdf8;
+  --secondary-hover: #0ea5e9;
 
-  --success: #10b981;
-  --error: #ef4444;
+  --success: #34d399;
+  --error: #f87171;
 
-  --border-1: #e2e8f0;
-  --border-2: #cbd5e1;
+  --border-1: #1e293b;
+  --border-2: #334155;
 
-  // Shadows
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+  // Shadows (Enhanced for Dark Mode)
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 8px -2px rgb(0 0 0 / 0.6), 0 2px 6px -1px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 12px 20px -4px rgb(0 0 0 / 0.7), 0 4px 8px -2px rgb(0 0 0 / 0.5);
 
   // Spacing
   --sp-xs: 0.25rem;

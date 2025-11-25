@@ -44,14 +44,13 @@ textarea {
   border-radius: var(--r-md);
   color: var(--txt-1);
   font: inherit;
-  transition: all var(--tr-base);
 
   &:hover { border-color: var(--border-2); }
 
   &:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+    box-shadow: 0 0 0 3px rgb(96 165 250 / 0.2);
   }
 
   &::placeholder { color: var(--txt-3); }
@@ -62,12 +61,11 @@ button {
   cursor: pointer;
   padding: var(--sp-sm) var(--sp-lg);
   background: var(--primary);
-  color: var(--txt-1);
+  color: #0a0e1a;
   border: none;
   border-radius: var(--r-md);
   font: inherit;
   font-weight: 500;
-  transition: all var(--tr-base);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -85,7 +83,6 @@ button {
 a {
   color: var(--secondary);
   text-decoration: none;
-  transition: color var(--tr-fast);
 
   &:hover { color: var(--secondary-hover); }
 }
@@ -98,54 +95,29 @@ input[type='range'] {
   border: 1px solid var(--border-1);
   padding: 0;
   cursor: pointer;
-  transition: all var(--tr-base);
 
   &:hover {
     border-color: var(--primary);
-    background: #bfdbfe;
   }
 
-  // Common thumb styles
   $thumb: (
-    width: 22px,
-    height: 22px,
-    background: white,
+    width: 20px,
+    height: 20px,
+    background: var(--bg-2),
     border: 3px solid var(--primary),
     border-radius: 50%,
-    cursor: pointer,
-    transition: all var(--tr-base),
-    box-shadow: 0 2px 4px rgb(0 0 0 / 0.1)
+    cursor: pointer
   );
 
   &::-webkit-slider-thumb {
     @each $prop, $val in $thumb {
       #{$prop}: $val;
     }
-
-    &:hover {
-      transform: scale(1.15);
-      box-shadow: 0 0 0 8px rgb(59 130 246 / 0.15);
-    }
-
-    &:active {
-      transform: scale(1.1);
-      box-shadow: 0 0 0 12px rgb(59 130 246 / 0.2);
-    }
   }
 
   &::-moz-range-thumb {
     @each $prop, $val in $thumb {
       #{$prop}: $val;
-    }
-
-    &:hover {
-      transform: scale(1.15);
-      box-shadow: 0 0 0 8px rgb(59 130 246 / 0.15);
-    }
-
-    &:active {
-      transform: scale(1.1);
-      box-shadow: 0 0 0 12px rgb(59 130 246 / 0.2);
     }
   }
 }

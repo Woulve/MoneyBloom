@@ -1,0 +1,10 @@
+@import '../../styles/mixins';
+
+.chart-container {
+  width: 100%;
+  height: 500px;
+
+  @include mq(md) { height: 400px; }
+  @include mq(sm) { height: 350px; }
+  @include mq(xs) { height: 300px; }
+}

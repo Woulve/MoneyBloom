@@ -1,0 +1,318 @@
+<div class="container">
+  <header class="header">
+    <div class="header-left">
+      <img src="/logo.webp" alt="MoneyBloom Logo" class="logo" />
+      <h1 class="title">
+        <span class="title-m">M</span><span class="title-o">o</span><span class="title-n">n</span><span class="title-e">e</span><span class="title-y">y</span><span class="title-b">B</span><span class="title-l">l</span><span class="title-oo">o</span><span class="title-om">o</span><span class="title-m2">m</span>
+      </h1>
+    </div>
+    <button type="button" (click)="reset()" class="btn-reset">Reset to Defaults</button>
+  </header>
+
+  <div class="content-grid">
+    <section class="controls card">
+      <h2 class="section-title">Investment Parameters</h2>
+
+      <div class="control-group">
+        <label for="currency" class="label">
+          <span class="label-text">Currency</span>
+          <span class="label-value">{{ currSymbol() }}</span>
+        </label>
+        <select
+          id="currency"
+          [value]="settings().currency"
+          (change)="update('currency', $event)"
+          class="currency-select"
+        >
+          @for (curr of currencies; track curr.code) {
+            <option [value]="curr.code">{{ curr.symbol }} {{ curr.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="starting-amount" class="label">
+          <span class="label-text">Starting Amount</span>
+        </label>
+        <div class="input-slider-group">
+          <div class="input-with-unit">
+            <span class="input-prefix">{{ currSymbol() }}</span>
+            <input
+              type="number"
+              [min]="0"
+              [step]="1000"
+              [value]="settings().startingAmount"
+              (input)="update('startingAmount', $event)"
+              class="number-input with-prefix"
+            />
+          </div>
+          <input
+            id="starting-amount"
+            type="range"
+            [min]="0"
+            [max]="100000"
+            [step]="1000"
+            [value]="Math.min(settings().startingAmount, 100000)"
+            (input)="update('startingAmount', $event)"
+            class="range-input"
+          />
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label for="monthly-contribution" class="label">
+          <span class="label-text">Monthly Contribution</span>
+        </label>
+        <div class="input-slider-group">
+          <div class="input-with-unit">
+            <span class="input-prefix">{{ currSymbol() }}</span>
+            <input
+              type="number"
+              [min]="0"
+              [step]="50"
+              [value]="settings().monthlyContribution"
+              (input)="update('monthlyContribution', $event)"
+              class="number-input with-prefix"
+            />
+          </div>
+          <input
+            id="monthly-contribution"
+            type="range"
+            [min]="0"
+            [max]="5000"
+            [step]="50"
+            [value]="Math.min(settings().monthlyContribution, 5000)"
+            (input)="update('monthlyContribution', $event)"
+            class="range-input"
+          />
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label for="growth-rate" class="label">
+          <span class="label-text">Annual Growth Rate</span>
+        </label>
+        <div class="input-slider-group">
+          <div class="input-with-unit">
+            <input
+              type="number"
+              [min]="0"
+              [step]="0.5"
+              [value]="settings().yearlyGrowthRate"
+              (input)="update('yearlyGrowthRate', $event)"
+              class="number-input with-suffix"
+            />
+            <span class="input-suffix">%</span>
+          </div>
+          <input
+            id="growth-rate"
+            type="range"
+            [min]="0"
+            [max]="20"
+            [step]="0.5"
+            [value]="Math.min(settings().yearlyGrowthRate, 20)"
+            (input)="update('yearlyGrowthRate', $event)"
+            class="range-input"
+          />
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label for="cashout-years" class="label">
+          <span class="label-text">Investment Period</span>
+        </label>
+        <div class="input-slider-group">
+          <div class="input-with-unit">
+            <input
+              type="number"
+              [min]="1"
+              [step]="1"
+              [value]="settings().cashoutYears"
+              (input)="update('cashoutYears', $event)"
+              class="number-input with-suffix"
+            />
+            <span class="input-suffix">years</span>
+          </div>
+          <input
+            id="cashout-years"
+            type="range"
+            [min]="1"
+            [max]="50"
+            [step]="1"
+            [value]="Math.min(settings().cashoutYears, 50)"
+            (input)="update('cashoutYears', $event)"
+            class="range-input"
+          />
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label for="inflation-rate" class="label">
+          <span class="label-text">Inflation Rate</span>
+        </label>
+        <div class="input-slider-group">
+          <div class="input-with-unit">
+            <input
+              type="number"
+              [min]="0"
+              [step]="0.5"
+              [value]="settings().inflationRate"
+              (input)="update('inflationRate', $event)"
+              class="number-input with-suffix"
+            />
+            <span class="input-suffix">%</span>
+          </div>
+          <input
+            id="inflation-rate"
+            type="range"
+            [min]="0"
+            [max]="10"
+            [step]="0.5"
+            [value]="Math.min(settings().inflationRate, 10)"
+            (input)="update('inflationRate', $event)"
+            class="range-input"
+          />
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label for="tax-rate" class="label">
+          <span class="label-text">Tax Rate on Gains</span>
+        </label>
+        <div class="input-slider-group">
+          <div class="input-with-unit">
+            <input
+              type="number"
+              [min]="0"
+              [step]="1"
+              [value]="settings().taxRate"
+              (input)="update('taxRate', $event)"
+              class="number-input with-suffix"
+            />
+            <span class="input-suffix">%</span>
+          </div>
+          <input
+            id="tax-rate"
+            type="range"
+            [min]="0"
+            [max]="50"
+            [step]="1"
+            [value]="Math.min(settings().taxRate, 50)"
+            (input)="update('taxRate', $event)"
+            class="range-input"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="results">
+      <div class="card graph-card">
+        <h2 class="section-title">Growth Projection</h2>
+        <app-projection-graph [projection]="proj()" [currencySymbol]="currSymbol()" />
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-section">
+          <h3 class="stat-section-title">Your Investment</h3>
+          <div class="stat-card card">
+            <div class="stat-label">Total Contributions</div>
+            <div class="stat-description">All money you put in</div>
+            <div class="stat-value">
+              {{ currSymbol() }}{{ proj().totalContributions.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-section">
+          <h3 class="stat-section-title">Your Returns</h3>
+          <div class="stat-card card">
+            <div class="stat-label">Total Growth</div>
+            <div class="stat-description">Investment gains earned</div>
+            <div class="stat-value stat-value-growth">
+              {{ currSymbol() }}{{ proj().totalGrowth.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-section">
+          <h3 class="stat-section-title">Final Values</h3>
+          <div class="stat-cards-row">
+            <div class="stat-card card">
+              <div class="stat-label">Nominal Value</div>
+              <div class="stat-description">Before taxes & inflation</div>
+              <div class="stat-value">
+                {{ currSymbol() }}{{ proj().finalValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+              </div>
+            </div>
+            <div class="stat-card card">
+              <div class="stat-label">After-Tax Value</div>
+              <div class="stat-description">After paying {{ settings().taxRate }}% tax on gains</div>
+              <div class="stat-value">
+                {{ currSymbol() }}{{ proj().afterTaxValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+              </div>
+            </div>
+            <div class="stat-card card">
+              <div class="stat-label">Inflation-Adjusted</div>
+              <div class="stat-description">Real purchasing power ({{ settings().inflationRate }}% inflation)</div>
+              <div class="stat-value">
+                {{ currSymbol() }}{{ proj().finalRealValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+              </div>
+            </div>
+            <div class="stat-card card stat-card-primary">
+              <div class="stat-label">Final Take-Home</div>
+              <div class="stat-description">After taxes & inflation - what you really get</div>
+              <div class="stat-value stat-value-primary">
+                {{ currSymbol() }}{{ proj().afterTaxRealValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="incentives-section">
+    <h2 class="incentives-title">Savings Incentives</h2>
+    <p class="incentives-subtitle">See how small changes today can make a big difference tomorrow</p>
+
+    <div class="incentives-grid">
+      <div class="incentive-card card">
+        <div class="incentive-icon">💰</div>
+        <div class="incentive-text">
+          Saving just <span class="incentive-highlight">{{ currSymbol() }}10 more per month</span>
+          would give you an additional
+          <span class="incentive-highlight-value">{{ currSymbol() }}{{ extraMonthlyImpact().toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}</span>
+          when you cash out
+        </div>
+      </div>
+
+      <div class="incentive-card card">
+        <div class="incentive-icon">🚀</div>
+        <div class="incentive-text">
+          Doubling your monthly contribution would result in
+          <span class="incentive-highlight-value">{{ currSymbol() }}{{ doubleContributionImpact().toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}</span>
+          more at retirement
+        </div>
+      </div>
+
+      <div class="incentive-card card">
+        <div class="incentive-icon">⏰</div>
+        <div class="incentive-text">
+          Investing for just <span class="incentive-highlight">1 more year</span>
+          would add
+          <span class="incentive-highlight-value">{{ currSymbol() }}{{ extraYearImpact().toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}</span>
+          to your final value
+        </div>
+      </div>
+
+      <div class="incentive-card card">
+        <div class="incentive-icon">🏖️</div>
+        <div class="incentive-text">
+          Your investment could generate
+          <span class="incentive-highlight-value">{{ currSymbol() }}{{ monthlyPassiveIncome().toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}</span>
+          in monthly passive income (4% withdrawal rate)
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

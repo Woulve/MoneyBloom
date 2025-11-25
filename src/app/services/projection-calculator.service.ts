@@ -1,157 +1,82 @@
 import { Injectable } from '@angular/core';
-import { SavingsAccount } from '../models/savings-account.model';
-import { TimelineAdjustment } from '../models/timeline-adjustment.model';
+import { ProjectionSettings } from '../models/projection-settings.model';
 
-export interface ProjectionDataPoint {
+export interface DataPoint {
   date: Date;
   value: number;
   investedAmount: number;
   monthIndex: number;
-  realValue: number; // Value adjusted for inflation
+  realValue: number;
 }
 
 export interface ProjectionResult {
-  dataPoints: ProjectionDataPoint[];
+  dataPoints: DataPoint[];
   finalValue: number;
   totalContributions: number;
   totalGrowth: number;
-  finalRealValue: number; // Final value adjusted for inflation
-  afterTaxValue: number; // Final value after taxes on gains
-  afterTaxRealValue: number; // Real value after taxes
+  finalRealValue: number;
+  afterTaxValue: number;
+  afterTaxRealValue: number;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectionCalculatorService {
-  calculateProjection(
-    account: SavingsAccount,
-    inflationRate = 0,
-    taxRate = 0
-  ): ProjectionResult {
-    const totalMonths = account.cashoutYears * 12;
-    const dataPoints: ProjectionDataPoint[] = [];
-    const startDate = account.createdAt;
+  calculateProjection(s: ProjectionSettings): ProjectionResult {
+    const months = s.cashoutYears * 12;
+    const pts: DataPoint[] = [];
+    const start = new Date();
 
-    let currentValue = account.startingAmount;
-    let currentMonthlyContribution = account.monthlyContribution;
-    let currentGrowthRate = account.yearlyGrowthRate;
-    let totalContributions = account.startingAmount;
+    let val = s.startingAmount;
+    let invested = s.startingAmount;
 
-    // Sort adjustments by date
-    const sortedAdjustments = [...account.adjustments].sort(
-      (a, b) => a.date.getTime() - b.date.getTime()
-    );
-
-    // Add initial data point
-    dataPoints.push({
-      date: new Date(startDate),
-      value: currentValue,
-      investedAmount: totalContributions,
+    pts.push({
+      date: new Date(start),
+      value: val,
+      investedAmount: invested,
       monthIndex: 0,
-      realValue: currentValue, // No inflation yet at month 0
+      realValue: val,
     });
 
-    for (let month = 1; month <= totalMonths; month++) {
-      const currentDate = this.addMonths(startDate, month);
+    for (let m = 1; m <= months; m++) {
+      val += s.monthlyContribution;
+      invested += s.monthlyContribution;
 
-      // Apply any adjustments that occur before this month
-      const applicableAdjustments = sortedAdjustments.filter((adj) => {
-        const adjustmentMonth = this.getMonthsDifference(startDate, adj.date);
-        return adjustmentMonth === month;
-      });
+      val *= 1 + s.yearlyGrowthRate / 100 / 12;
 
-      for (const adjustment of applicableAdjustments) {
-        switch (adjustment.type) {
-          case 'contribution-change':
-            currentMonthlyContribution = adjustment.value;
-            break;
-          case 'growth-rate-change':
-            currentGrowthRate = adjustment.value;
-            break;
-          case 'one-time-deposit':
-            currentValue += adjustment.value;
-            totalContributions += adjustment.value;
-            break;
-          case 'one-time-withdrawal':
-            currentValue -= adjustment.value;
-            break;
-        }
-      }
+      const inflationFactor = Math.pow(1 + s.inflationRate / 100 / 12, m);
+      const realVal = val / inflationFactor;
 
-      // Add monthly contribution
-      currentValue += currentMonthlyContribution;
-      totalContributions += currentMonthlyContribution;
-
-      // Apply monthly growth (compound interest)
-      const monthlyGrowthRate = currentGrowthRate / 100 / 12;
-      currentValue *= 1 + monthlyGrowthRate;
-
-      // Calculate real value (adjusted for inflation)
-      const monthlyInflationRate = inflationRate / 100 / 12;
-      const inflationFactor = Math.pow(1 + monthlyInflationRate, month);
-      const realValue = currentValue / inflationFactor;
-
-      dataPoints.push({
-        date: new Date(currentDate),
-        value: currentValue,
-        investedAmount: totalContributions,
-        monthIndex: month,
-        realValue,
+      pts.push({
+        date: this.addMonths(start, m),
+        value: val,
+        investedAmount: invested,
+        monthIndex: m,
+        realValue: realVal,
       });
     }
 
-    const finalValue = currentValue;
-    const totalGrowth = finalValue - totalContributions;
-
-    // Calculate inflation-adjusted final value
-    const totalInflationFactor = Math.pow(1 + inflationRate / 100, account.cashoutYears);
-    const finalRealValue = finalValue / totalInflationFactor;
-
-    // Calculate after-tax value (tax only on gains)
-    const taxOnGains = totalGrowth * (taxRate / 100);
-    const afterTaxValue = finalValue - taxOnGains;
-
-    // Calculate real value after taxes
-    const afterTaxRealValue = afterTaxValue / totalInflationFactor;
+    const totalInflation = Math.pow(1 + s.inflationRate / 100, s.cashoutYears);
+    const realVal = val / totalInflation;
+    const growth = val - invested;
+    const afterTax = val - growth * (s.taxRate / 100);
+    const afterTaxReal = afterTax / totalInflation;
 
     return {
-      dataPoints,
-      finalValue,
-      totalContributions,
-      totalGrowth,
-      finalRealValue,
-      afterTaxValue,
-      afterTaxRealValue,
+      dataPoints: pts,
+      finalValue: Math.round(val * 100) / 100,
+      totalContributions: Math.round(invested * 100) / 100,
+      totalGrowth: Math.round(growth * 100) / 100,
+      finalRealValue: Math.round(realVal * 100) / 100,
+      afterTaxValue: Math.round(afterTax * 100) / 100,
+      afterTaxRealValue: Math.round(afterTaxReal * 100) / 100,
     };
-  }
-
-  calculateValueAtDate(account: SavingsAccount, targetDate: Date): number {
-    const projection = this.calculateProjection(account);
-    const targetTime = targetDate.getTime();
-
-    // Find the closest data point
-    const closestPoint = projection.dataPoints.reduce((prev, curr) => {
-      return Math.abs(curr.date.getTime() - targetTime) <
-        Math.abs(prev.date.getTime() - targetTime)
-        ? curr
-        : prev;
-    });
-
-    return closestPoint.value;
   }
 
   private addMonths(date: Date, months: number): Date {
     const result = new Date(date);
     result.setMonth(result.getMonth() + months);
     return result;
-  }
-
-  private getMonthsDifference(startDate: Date, endDate: Date): number {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const yearDiff = end.getFullYear() - start.getFullYear();
-    const monthDiff = end.getMonth() - start.getMonth();
-    return yearDiff * 12 + monthDiff;
   }
 }

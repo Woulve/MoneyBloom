@@ -7,9 +7,8 @@
   <script>
     (function() {
       const path = window.location.pathname;
-      const supportedLocales = ['en-US', 'de'];
+      const supportedLocales = ['en', 'de'];
       
-      // If already at a locale path, redirect to it
       for (const locale of supportedLocales) {
         if (path.startsWith('/' + locale + '/')) {
           window.location.href = path;
@@ -17,21 +16,20 @@
         }
       }
       
-      // If at root or unknown path, redirect to default locale
       const userLang = navigator.language || navigator.userLanguage;
-      if (userLang.startsWith('en')) {
+      if (userLang.startsWith('de')) {
         window.location.href = '/de/';
       } else {
-        window.location.href = '/en-US/';
+        window.location.href = '/en/';
       }
     })();
   </script>
   <noscript>
-    <meta http-equiv="refresh" content="0;url=/en-US/">
+    <meta http-equiv="refresh" content="0;url=/en/">
   </noscript>
 </head>
 <body>
   <p>Loading MoneyBloom...</p>
-  <p>If you are not redirected automatically, <a href="/en-US/">click here for English</a> or <a href="/de/">hier für Deutsch</a>.</p>
+  <p>If you are not redirected automatically, <a href="/en/">click here for English</a> or <a href="/de/">hier für Deutsch</a>.</p>
 </body>
 </html>

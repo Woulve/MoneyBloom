@@ -7,6 +7,7 @@ export interface DataPoint {
   investedAmount: number;
   monthIndex: number;
   realValue: number;
+  afterTaxRealValue: number;
 }
 
 export interface ProjectionResult {
@@ -37,6 +38,7 @@ export class ProjectionCalculatorService {
       investedAmount: invested,
       monthIndex: 0,
       realValue: val,
+      afterTaxRealValue: val, // No gains yet, so no tax
     });
 
     for (let m = 1; m <= months; m++) {
@@ -48,12 +50,18 @@ export class ProjectionCalculatorService {
       const inflationFactor = Math.pow(1 + s.inflationRate / 100 / 12, m);
       const realVal = val / inflationFactor;
 
+      // Calculate after-tax real value at this point
+      const currentGrowth = val - invested;
+      const afterTax = val - currentGrowth * (s.taxRate / 100);
+      const afterTaxReal = afterTax / inflationFactor;
+
       pts.push({
         date: this.addMonths(start, m),
         value: val,
         investedAmount: invested,
         monthIndex: m,
         realValue: realVal,
+        afterTaxRealValue: afterTaxReal,
       });
     }
 

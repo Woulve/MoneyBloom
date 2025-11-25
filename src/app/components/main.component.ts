@@ -3,7 +3,7 @@ import { DecimalPipe } from '@angular/common';
 import { SettingsService } from '../services/settings.service';
 import { ProjectionCalculatorService } from '../services/projection-calculator.service';
 import { ProjectionGraphComponent } from './projection-graph.component';
-import { ProjectionSettings, CURRENCIES } from '../models/projection-settings.model';
+import { ProjectionSettings, CURRENCIES, convertCurrency } from '../models/projection-settings.model';
 
 @Component({
   selector: 'app-main',
@@ -66,8 +66,23 @@ export class MainComponent {
 
   update(key: keyof ProjectionSettings, event: Event): void {
     const target = event.target as HTMLInputElement | HTMLSelectElement;
-    const val = key === 'currency' ? target.value : +target.value;
-    this.settingsSvc.updateSettings({ [key]: val });
+
+    if (key === 'currency') {
+      const newCurrency = target.value;
+      const oldCurrency = this.settings().currency;
+      const currentSettings = this.settings();
+
+      const convertedSettings: Partial<ProjectionSettings> = {
+        currency: newCurrency,
+        startingAmount: Math.round(convertCurrency(currentSettings.startingAmount, oldCurrency, newCurrency)),
+        monthlyContribution: Math.round(convertCurrency(currentSettings.monthlyContribution, oldCurrency, newCurrency)),
+      };
+
+      this.settingsSvc.updateSettings(convertedSettings);
+    } else {
+      const val = +target.value;
+      this.settingsSvc.updateSettings({ [key]: val });
+    }
   }
 
   reset(): void {

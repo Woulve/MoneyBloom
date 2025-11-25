@@ -19,11 +19,17 @@ export const DEFAULT_SETTINGS: ProjectionSettings = {
 };
 
 export const CURRENCIES = [
-  { code: 'USD', symbol: '$', name: 'US Dollar' },
-  { code: 'EUR', symbol: '€', name: 'Euro' },
-  { code: 'GBP', symbol: '£', name: 'British Pound' },
-  { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
-  { code: 'CHF', symbol: 'Fr', name: 'Swiss Franc' },
-  { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
-  { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+  { code: 'USD', symbol: '$', name: 'US Dollar', rate: 1.0 },
+  { code: 'EUR', symbol: '€', name: 'Euro', rate: 0.86 },
+  { code: 'GBP', symbol: '£', name: 'British Pound', rate: 0.75 },
+  { code: 'JPY', symbol: '¥', name: 'Japanese Yen', rate: 155.88 },
+  { code: 'CHF', symbol: 'Fr', name: 'Swiss Franc', rate: 0.80 },
+  { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar', rate: 1.40 },
+  { code: 'AUD', symbol: 'A$', name: 'Australian Dollar', rate: 1.54 },
 ] as const;
+
+export function convertCurrency(amount: number, fromCurrency: string, toCurrency: string): number {
+  const fromRate = CURRENCIES.find(c => c.code === fromCurrency)?.rate ?? 1.0;
+  const toRate = CURRENCIES.find(c => c.code === toCurrency)?.rate ?? 1.0;
+  return (amount / fromRate) * toRate;
+}

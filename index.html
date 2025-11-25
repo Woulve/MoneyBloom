@@ -5,15 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Redirecting...</title>
   <script>
-    // Detect browser language and redirect to appropriate locale
     const userLang = navigator.language || navigator.userLanguage;
     const supportedLocales = ['en-US', 'de'];
     
-    // Check if browser language matches German
     if (userLang.startsWith('de')) {
       window.location.href = '/de/';
     } else {
-      // Default to English
       window.location.href = '/en-US/';
     }
   </script>
